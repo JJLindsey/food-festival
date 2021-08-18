@@ -1,5 +1,5 @@
 //webpack's methods and properties into the config file
-const webpack  = require('webpack');
+const webpack = require('webpack');
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
@@ -13,7 +13,31 @@ module.exports = {
     },
     output: {
         filename: '[name].bundle.js',
-        path: __dirname + 'dist'
+        path: __dirname + '/dist',
+    },
+    module: {
+        rules: [
+            {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            esModule: false,
+                            name(file) {
+                                return '[path][name].[ext]';
+                            },
+                            publicPath: function (url) {
+                                return url.replace('../', '/assets/');
+                            }
+                        }
+                    },
+                    {
+                        loader: 'image-webpack-loader'
+                    }
+                ]
+            }
+        ]
     },
     //nside the empty array, need to tell webpack which plugin to use. provide plugin to define the $ and jQuery variables to use the installed npm package
     plugins: [
